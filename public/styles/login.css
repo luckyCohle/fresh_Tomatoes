@@ -1,0 +1,86 @@
+/* Navbar adjustments */
+.navbar {
+    padding: 0.5rem 1rem; /* Use Bootstrap padding utilities */
+    width: 100%; /* Ensure full width */
+}
+
+/* Adjust margin of nav elements */
+.nav-elements {
+    margin-inline-start: 15px;
+}
+
+/* Apply the Lobster font correctly */
+.lobster-regular {
+    font-family: "Lobster", sans-serif;
+}
+
+/* Logo styling */
+#logo {
+    width: 45px;
+    padding: 5px;
+}
+
+/* Container adjustments */
+.container-fluid {
+    padding: 0;
+    margin: 0;
+}
+
+/* Background styling */
+body {
+    zoom: 1.5;
+    background-image: url(../img/there_will_be_blood.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh; /* Use min-height for better responsiveness */
+}
+
+/* Adjust the search bar size */
+.search {
+    height: 1.7rem;
+}
+
+/* Style the search button */
+#search-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Adjust the login box size */
+.login-box {
+    max-width: 300px; /* Reduced width by 100px */
+    padding: 1.5rem; /* Adjusted padding for better spacing */
+}
+
+/* Adjust the card padding */
+.card {
+    padding: 1.5rem; /* Adjusted padding inside the card */
+}
+
+/* Adjust the font size and spacing inside the login form */
+.card h1 {
+    font-size: 1.5rem; /* Smaller heading size */
+}
+
+.form-label {
+    font-size: 0.875rem; /* Smaller label size */
+}
+
+.form-control {
+    font-size: 0.875rem; /* Smaller input font size */
+    padding: 0.5rem; /* Adjust padding for inputs */
+}
+
+button {
+    font-size: 0.875rem; /* Smaller button font size */
+    padding: 0.5rem; /* Adjust padding for button */
+}
+.navbar {
+
+    position: sticky;
+    top: 0;
+    z-index: 1030; /* Or any high value to keep it above other content */
+    
+}
+

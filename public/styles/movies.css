@@ -1,0 +1,126 @@
+body {
+    background-color: #343a40 !important;
+}
+
+.navbar {
+    background-color: #343a40; /* Ensure the background is visible */
+    padding: 0.5rem 1rem; /* Optional: Adjust padding */
+    width: 100%; /* Ensure full width */
+}
+.navbar-nav .nav-link {
+    font-size: 1.25rem; /* Increase font size */
+    font-weight: bold;  /* Optional: make text bold */
+}
+.navbar-brand {
+    font-family: "Lobster", sans-serif;
+}
+
+#logo {
+    height: 50px;
+    padding: 5px;
+}
+
+.container-fluid {
+    padding: 0;
+    margin: 0;
+}
+
+.search {
+    height: 1.7rem;
+}
+
+#search-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+#movieList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem; /* Add some space between cards */
+}
+
+/* .card {
+    background-color: #fff; 
+    border-radius: 0.5rem;
+    overflow: hidden;
+    width: 200px;
+    height: auto; 
+    position: relative; 
+    transition: transform 0.2s;
+} */
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Force all cards to be equal in height */
+}
+
+.card-body {
+    flex-grow: 1; /* Allow the body to take up remaining space */
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-img {
+    width: 100%;
+    height: auto; /* Ensure images are responsive */
+}
+
+.card-title, .card-text {
+    margin: 0.5rem; /* Adjust margins */
+}
+
+.card-img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.5rem;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease-in-out;
+}
+
+.card:hover .card-img-overlay {
+    opacity: 1; /* Show overlay on hover */
+}
+
+.edit-button {
+    z-index: 10; /* Ensure buttons appear above other content */
+    margin-top: 0.5rem; /* Add margin to separate buttons */
+    font-size: 0.8rem; /* Adjust button size */
+    padding: 0.25rem 0.5rem; /* Adjust padding */
+}
+.delete-button {
+    z-index: 10; /* Ensure buttons appear above other content */
+    margin-top: 0.5rem; /* Add margin to separate buttons */
+    font-size: 0.8rem; /* Adjust button size */
+    padding: 0.25rem 0.5rem; /* Adjust padding */
+}
+
+@media (max-width: 576px) {
+    .card {
+        width: 150px; /* Make cards smaller on small screens */
+        height: auto; /* Adjust height automatically */
+    }
+    
+    .card-title {
+        font-size: 0.9rem;
+    }
+    
+    .card-text {
+        font-size: 0.7rem;
+    }
+}
+.edit-button, .delete-button {
+    background-color: red !important; /* Temporary style for visibility */
+    border: 3px solid yellow !important
+}

@@ -1,0 +1,26 @@
+/* Navbar logo */
+#logo {
+    width: 45px;
+    padding: 5px;
+}
+
+/* Background and container adjustments */
+body {
+    zoom: 1.4;
+    background-image: url("../img/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Text content in the main body */
+#mBody {
+    background: rgba(255, 255, 255, 0.8); /* Slightly transparent background for readability */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.lobster-regular {
+    font-family: "Lobster", sans-serif;
+}

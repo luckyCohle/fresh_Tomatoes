@@ -6,5 +6,6 @@ export interface LoginResult {
     success: boolean;
     message: string;
     user?: any;
+    idToken?: string;
 }
 export declare function loginUser({ email, password }: LoginCredentials): Promise<LoginResult>;

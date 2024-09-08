@@ -1,27 +1,47 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const server = express();
 const path = require('path');
 const ejsMate = require('ejs-mate');
+const methodOverride = require('method-override');
 server.set("view engine", "ejs");
 server.set("views", path.join(__dirname, '..', "views"));
-const firestore_1 = require("firebase/firestore");
-const firebase_config_1 = require("./firebase-config");
 const authenticate_1 = require("./authenticate");
+const fetchMovie_1 = require("./fetchMovie");
+const admin = __importStar(require("firebase-admin"));
+admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    // If you're using other Firebase services, you might need to add their config here
+});
 //serve static file
 server.use(express.static(path.join(__dirname, '..', 'public')));
 server.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 server.use(express.json()); // for parsing application/json
+server.use(methodOverride("_method"));
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', './public', 'index.html'));
 });
@@ -36,36 +56,26 @@ server.get('/signup', (req, res) => {
 });
 server.post('/signup', authenticate_1.signup);
 //movies route
-server.get('/movies', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        console.log('Fetching movies...');
-        const searchTerm = req.query.search ? req.query.search.toLowerCase() : '';
-        console.log('Search term:', searchTerm);
-        const moviesRef = (0, firestore_1.collection)(firebase_config_1.db, 'movies');
-        console.log('Getting documents...');
-        const snapshot = yield (0, firestore_1.getDocs)(moviesRef);
-        console.log('Documents fetched. Count:', snapshot.size);
-        const movies = [];
-        snapshot.forEach((doc) => {
-            const movieData = doc.data();
-            const movie = Object.assign({ id: doc.id }, movieData);
-            console.log('Processing movie:', movie.id);
-            // Perform case-insensitive, partial match search on multiple fields
-            if (!searchTerm ||
-                (movie.title && movie.title.toLowerCase().includes(searchTerm)) ||
-                (movie.genre && movie.genre.some(g => g && g.toLowerCase().includes(searchTerm))) ||
-                (movie.releaseDate && movie.releaseDate.toLowerCase().includes(searchTerm))) {
-                movies.push(movie);
-            }
-        });
-        console.log('Filtered movies count:', movies.length);
-        res.render('movies', { movies, searchTerm });
-    }
-    catch (error) {
-        console.error('Error fetching movies:', error);
-        next(error); // Pass the error to the error handling middleware
-    }
-}));
+server.get('/movies', fetchMovie_1.fetchMovies);
+server.get('/:movieId/movie', (req, res, next) => {
+    (0, fetchMovie_1.movieInfo)(req.params.movieId, req, res, next);
+});
+//delete Movie
+server.delete('/:movieId/movie', (req, res, next) => {
+    (0, fetchMovie_1.deleteMovie)(req.params.movieId, req, res, next);
+});
+//edit movie
+server.put('/:movieId/movie', (req, res, next) => {
+    const id = req.params.movieId;
+    (0, fetchMovie_1.editMovie)(id, req, res, next);
+});
+//logout
+server.post('/logout', authenticate_1.logout);
+//render add form
+server.get('/add', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '..', './public', 'add.html'));
+});
+server.post('/add', fetchMovie_1.addMovie);
 server.listen(3000, () => {
     console.log("Server started on port 3000");
 });

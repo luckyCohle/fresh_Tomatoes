@@ -9,15 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signup = exports.login = void 0;
+exports.logout = exports.isLoggedInMiddleware = exports.signup = exports.login = void 0;
 const express = require('express');
 const server = express();
 const path = require('path');
 const ejsMate = require('ejs-mate');
+const axios = require('axios');
 server.set("view engine", "ejs");
 server.set("views", path.join(__dirname, '..', "views"));
+const auth_1 = require("firebase/auth");
 const login_1 = require("./login");
 const signUp_1 = require("./signUp");
+const firebase_config_1 = require("./firebase-config");
+const auth_2 = require("firebase/auth");
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Extract email and password from request body
@@ -80,3 +84,44 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signup = signup;
+//isLoggedin
+const isLoggedInMiddleware = (app) => {
+    const auth = (0, auth_1.getAuth)(app);
+    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield new Promise((resolve, reject) => {
+                const unsubscribe = auth.onAuthStateChanged((user) => {
+                    unsubscribe(); // Unsubscribe after first response
+                    if (user) {
+                        resolve(user);
+                    }
+                    else {
+                        reject('No user logged in');
+                    }
+                }, (error) => {
+                    unsubscribe(); // Unsubscribe in case of error
+                    reject(error);
+                });
+            });
+            // If we reach here, the user is logged in
+            next();
+        }
+        catch (error) {
+            // User is not logged in
+            res.status(401).json({ error: 'Unauthorized: User not logged in' });
+        }
+    });
+};
+exports.isLoggedInMiddleware = isLoggedInMiddleware;
+//logout
+const logout = () => {
+    (0, auth_2.signOut)(firebase_config_1.auth).then(() => {
+        // Sign-out successful.
+        console.log('User signed out successfully.');
+        // Redirect to login page or perform other actions
+    }).catch((error) => {
+        // An error happened.
+        console.error('Error signing out:', error);
+    });
+};
+exports.logout = logout;

@@ -17,7 +17,14 @@ export interface LoginResult {
   success: boolean;
   message: string;
   user?: any; // You might want to define a more specific user type
+  idToken?: string;
 }
+// interface LoginResult {
+//   success: boolean;
+//   message: string;
+//   idToken?: string;
+// }
+
 
 // Firebase login function
 export async function loginUser({ email, password }: LoginCredentials): Promise<LoginResult> {

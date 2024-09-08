@@ -2,14 +2,22 @@ const express = require('express');
 const server = express();
 const path = require('path');
 const ejsMate = require('ejs-mate');
+const axios = require('axios');
+import { Request,Response,NextFunction } from "express";
+
 
 server.set("view engine", "ejs");
 server.set("views", path.join(__dirname,'..',"views"));
 
+import { Auth, User, getAuth } from 'firebase/auth';
+
 import { collection, getDocs } from "firebase/firestore";
 import { loginUser,LoginCredentials,LoginResult } from "./login";
 import { signUpUser } from "./signUp";
-import { db } from "./firebase-config";
+import { auth, db } from "./firebase-config";
+import {  signOut } from "firebase/auth";
+import { firebaseConfig } from "./firebase-config";
+
 
 interface Movie {
   id: string;
@@ -84,4 +92,48 @@ export const signup =  async (req: any, res: any) => {
     // If another error occurs, send a generic error response
     res.status(500).json({ error: 'Failed to sign up user. Please try again later.' });
   }
+}
+
+//isLoggedin
+export const isLoggedInMiddleware = (app: any) => {
+  const auth: Auth = getAuth(app);
+
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await new Promise<User>((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(
+          (user) => {
+            unsubscribe(); // Unsubscribe after first response
+            if (user) {
+              resolve(user);
+            } else {
+              reject('No user logged in');
+            }
+          },
+          (error) => {
+            unsubscribe(); // Unsubscribe in case of error
+            reject(error);
+          }
+        );
+      });
+      
+      // If we reach here, the user is logged in
+      next();
+    } catch (error) {
+      // User is not logged in
+      res.status(401).json({ error: 'Unauthorized: User not logged in' });
+    }
+  };
+};
+
+//logout
+export const logout =()=> {
+  signOut(auth).then(() => {
+    // Sign-out successful.
+    console.log('User signed out successfully.');
+    // Redirect to login page or perform other actions
+  }).catch((error) => {
+    // An error happened.
+    console.error('Error signing out:', error);
+  });
 }

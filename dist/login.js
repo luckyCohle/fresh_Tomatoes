@@ -17,6 +17,11 @@ const firebase_config_1 = require("./firebase-config");
 // Initialize Firebase
 const app = (0, app_1.initializeApp)(firebase_config_1.firebaseConfig);
 const auth = (0, auth_1.getAuth)(app);
+// interface LoginResult {
+//   success: boolean;
+//   message: string;
+//   idToken?: string;
+// }
 // Firebase login function
 function loginUser(_a) {
     return __awaiter(this, arguments, void 0, function* ({ email, password }) {
